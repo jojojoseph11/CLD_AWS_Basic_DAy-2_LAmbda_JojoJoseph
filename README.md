@@ -18,3 +18,4 @@ Convert the Day-1 handson to run on Lambda and
 * User should be able to  Get image public URL 
 
 *  User should be able to Change image permissions  
+
