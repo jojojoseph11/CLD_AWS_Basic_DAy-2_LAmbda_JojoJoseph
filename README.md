@@ -1,29 +1,20 @@
-# README #
+# AWS Day 2 Hands-On Lambda #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+[Docs](https://docs.google.com/presentation/d/1thzHz-fT8w1u-Ov9t9AciVNEYE5nOM1H2Alr08m9its/edit#slide=id.gab8531950a_0_269 )
 
-### What is this repository for? ###
+Convert the Day-1 handson to run on Lambda and 
+### create the API’s for the following  ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* User should be able to Upload an image 
 
-### How do I get set up? ###
+* User should be able to Get an Image 
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* User should be able to List all images 
 
-### Contribution guidelines ###
+* User should be able to Update image 
 
-* Writing tests
-* Code review
-* Other guidelines
+* User should be able to  Delete image 
 
-### Who do I talk to? ###
+* User should be able to  Get image public URL 
 
-* Repo owner or admin
-* Other community or team contact
+*  User should be able to Change image permissions  
