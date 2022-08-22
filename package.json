@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://bitbucket.org/Weavers/cld001_aws_basics-day2_lambda_jojojoseph/issues"
   },
-  "homepage": "https://bitbucket.org/Weavers/cld001_aws_basics-day2_lambda_jojojoseph#readme"
+  "homepage": "https://bitbucket.org/Weavers/cld001_aws_basics-day2_lambda_jojojoseph#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1"
+  }
 }

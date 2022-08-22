@@ -1,5 +1,7 @@
 const AWS = require('aws-sdk');
-const ID = process.env.ACCESS_KEY;
+require('dotenv').config({ path: "./vars/.env" })
+const ID = process.env.AWS_S3_ACCESS_KEY_ID;
+console.log(ID);
 const SECRET = process.env.SECRET_KEY;
 
 const s3 = new AWS.S3({
