@@ -1,0 +1,27 @@
+Notes: @Prince 
+Template reference Bible : https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-reference.html
+
+Notes On SAM: Ref. OneNote 
+
+Notes : S3 - Bucket - Lambda - 
+Ref: https://aws.amazon.com/blogs/compute/uploading-to-amazon-s3-directly-from-a-web-or-mobile-application/#:~:text=Overview%20of%20serverless%20uploading%20to%20S3&text=Call%20an%20Amazon%20API%20Gateway,application%20to%20the%20S3%20bucket.
+Codes : https://github.com/aws-samples/amazon-s3-presigned-urls-aws-sam/blob/master/getSignedURL/app.js
+
+
+AWS Notes : https://docs.google.com/presentation/d/1strVxkx1FBUxFYxaxFU8x8gVoezakJps83cyDLHD-jg/edit#slide=id.gb47eed045a_0_631 
+
+
+aws sdk for handlindg s3 bucket creation
+
+ npm install @aws-sdk/client-s3
+
+aws credentials for handling s3 bucket
+
+npm install @aws-sdk/credential-providers
+
+
+
+AWS S3 Bucket Cloud formatation 
+
+
+ aws cloudformation create-stack --stack-name s3-cloud-formation-training-jojo --template-body file://AWS/S3BucketSimpler.yml

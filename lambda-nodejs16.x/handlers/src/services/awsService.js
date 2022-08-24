@@ -1,25 +1,26 @@
 const AWS = require('aws-sdk');
-require('dotenv').config({ path: "./vars/.env" })
 const ID = process.env.AWS_S3_ACCESS_KEY_ID;
-console.log(ID);
-const SECRET = process.env.SECRET_KEY;
+const SECRET = process.env.AWS_S3_SECRET_ACCESS_KEY;
+const REGION = process.env.REGION;
 
 const s3 = new AWS.S3({
     accessKeyId: ID,
-    secretAccessKey: SECRET
+    secretAccessKey: SECRET,
+    region: REGION
 });
 
 
-module.exports.addImageObject = async (imageData) => {
-    return await s3.upload(imageData).promise();
-};
+module.exports.
+    addImageObject = async (imageData) => {
+        return await s3.upload(imageData).promise();
+    };
 
 module.exports.getImageObject = async (imageName) => {
     return await s3.getObject(imageName).promise();
 };
 
 module.exports.listImageObject = async (paramsData) => {
-    return await s3.listObjects(paramsData).promise();
+    return await s3.listObjectsV2(paramsData).promise();
 };
 
 module.exports.deleteImageObject = async (paramsData) => {
@@ -27,9 +28,13 @@ module.exports.deleteImageObject = async (paramsData) => {
 };
 
 module.exports.getImageUrlObject = async (paramsData) => {
-    return await s3.getSignedUrl('getObject', paramsData);
+    return await s3.getSignedUrlPromise('getObject', paramsData);
 };
 
 module.exports.changeImagePermissions = async (paramsData) => {
     return await s3.putObjectAcl(paramsData).promise();
+};
+
+module.exports.getSignedUrlPromise = async (paramsData) => {
+    return await s3.getSignedUrl('putObject', paramsData);
 };

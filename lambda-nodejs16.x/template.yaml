@@ -1,0 +1,293 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  FActweavers Training S3 lambda SAM Fucntion to upload image to AWS S3 Bucket
+  lambda-nodejs16.x
+
+  From Sample SAM Template for lambda-nodejs16.x
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  # HTTP API for the upload url for image uplaod
+  MyApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      # CORS configuration - this is open for development only and should be restricted in prod.
+      # See https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-httpapi-httpapicorsconfiguration.html
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - "*"
+        AllowOrigins:
+          - "*"
+  s3ImageBucketRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: "sts:AssumeRole"
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      RoleName: get-Image-Role
+      Policies:
+        - PolicyName: get-Image-Policies
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - s3:GetObject
+                  - s3:GetObjectAcl
+                  - s3:ListBucket
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                  - s3:DeleteObject
+                  - "logs:*"
+                Resource:
+                  - "*"
+                  - "arn:aws:s3:::*"
+                Effect: Allow
+  ServiceFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.lambdaHandler
+      Runtime: nodejs16.x
+      FunctionName: getImageFunction
+      Role: !GetAtt
+        - s3ImageBucketRole
+        - Arn
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /
+            Method: get
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key"
+  uploadImageFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.uploadImage
+      Runtime: nodejs16.x
+      FunctionName: uploadImageFunction
+      Role: !GetAtt
+        - s3ImageBucketRole
+        - Arn
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /uploadImage
+            Method: post
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key/zJbD5d4ZmwRvKrOygJQSJ"
+  getImageFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.getImage
+      Runtime: nodejs16.x
+      FunctionName: getImageFunction
+      Role: !GetAtt
+        - s3ImageBucketRole
+        - Arn
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /getImage
+            Method: get
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key"
+  listAllImageFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.listAllImage
+      Runtime: nodejs16.x
+      FunctionName: listAllImageFunction
+      Role: !GetAtt
+        - s3ImageBucketRole
+        - Arn
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /listAllImage
+            Method: get
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key"
+  deleteImageFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.deleteImage
+      Runtime: nodejs16.x
+      FunctionName: deleteImageFunction
+      Role: !GetAtt
+        - s3ImageBucketRole
+        - Arn
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /deleteImage
+            Method: get
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key"
+  getPublicUrlImageFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.getPublicUrlImage
+      Runtime: nodejs16.x
+      FunctionName: getPublicUrlFunction
+      Role: !GetAtt
+        - s3ImageBucketRole
+        - Arn
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /getPublicUrl
+            Method: get
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key"
+  changePermissionsServicelImageFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.changePermissionsService
+      Runtime: nodejs16.x
+      FunctionName: changePermissionsServiceFunction
+      Role: !GetAtt
+        - s3ImageBucketRole
+        - Arn
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /changeImagePermissions
+            Method: get
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key"
+  getUploadS3ImageURLFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: handlers/
+      Handler: app.getUploadS3ImageURL
+      Runtime: nodejs16.x
+      FunctionName: getUploadS3ImageURLFunction
+      Policies:
+        - S3WritePolicy:
+            BucketName: arn:aws:s3:::factweavers-aws-training-s3-bucket-jojo
+        ## This permission allows the Lambda function to request signed URLs
+        ## for objects that will be publicly readable. Uncomment if you want this ACL.
+        - Statement:
+          - Effect: Allow
+            Resource: arn:aws:s3:::factweavers-aws-training-s3-bucket-jojo
+            Action:
+              - s3:putObjectAcl
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /getUploadS3ImageURL
+            Method: get
+      Environment:
+        Variables:
+          UploadBucket: "arn:aws:s3:::factweavers-aws-training-s3-bucket-jojo"
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "ap-south-1"
+          AWS_S3_ACCESS_KEY_ID: "your-access-key"
+          AWS_S3_SECRET_ACCESS_KEY: "your-secret-key"
+   ## S3 bucket
+  # AWSS3Bucket:
+  #     Type: AWS::S3::Bucket
+  #     DeletionPolicy: Retain
+  #     Properties:
+  #       BucketName: factweavers-aws-training-s3-bucket-jojo
+  #       CorsConfiguration:
+  #         CorsRules:
+  #           - AllowedHeaders:
+  #               - "*"
+  #             AllowedMethods:
+  #               - GET
+  #               - PUT
+  #               - HEAD
+  #             AllowedOrigins:
+  #               - "*"
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit fresources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  APIendpoint:
+    Description: "HTTP API endpoint URL"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com"
+  S3UploadBucketName:
+    Description: "S3 bucket for application uploads"
+    Value: !Ref 'S3UploadBucket'    
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  HelloWorldFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn

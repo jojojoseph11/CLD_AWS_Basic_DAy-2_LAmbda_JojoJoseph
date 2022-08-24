@@ -1,27 +1,18 @@
 const awsService = require("./awsService");
-const BUCKET_NAME = 'fact-image-manager';
-const request = require('request')
-
-const fetchImage = async (url) => {
-    return new Promise((resolve, reject) => {
-        request({ url, encoding: null }, (err, resp, buffer) => {
-            if (err) {
-                resolve(null);
-            }
-            resolve(buffer);
-        });
-    })
-}
+const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+const UploadBucket = process.env.UploadBucket;
+const URL_EXPIRATION_SECONDS = 300
 
 module.exports.uploadImageService = async (reqData) => {
     try {
-        let fileContent = await fetchImage(reqData);
-        let fileName = reqData.replace(/^.*[\\\/]/, '');
+        const fileName = profile.jpg
+        let uploadPath = __dirname + '/../../uploads/' + file.name;
+        let reader = fs.createReadStream(uploadPath);
         const params = {
             Bucket: BUCKET_NAME,
-            Key: 'aws_imagelist/' + fileName,
-            Body: fileContent
-        };
+            Body: reader,
+            Key: file.name
+        }
         let results = await awsService.addImageObject(params);
         return results;
     }
@@ -45,10 +36,11 @@ module.exports.getImageService = async (fileName) => {
 };
 
 
-module.exports.listImageService = async () => {
+module.exports.listImageService = async (limit) => {
+    console.log(`Factweavers limit ${limit}`);
     const params = {
         Bucket: BUCKET_NAME,
-        Prefix: 'aws_imagelist/'
+        MaxKeys: limit
     };
     try {
         let results = await awsService.listImageObject(params);
@@ -59,6 +51,7 @@ module.exports.listImageService = async () => {
     }
 }
 
+//deleting Images Services
 module.exports.deleteImageService = async (fileName) => {
     const params = {
         Bucket: BUCKET_NAME,
@@ -73,6 +66,8 @@ module.exports.deleteImageService = async (fileName) => {
     }
 };
 
+
+//get Image Url services
 module.exports.getImageUrlService = async (fileName) => {
     const params = {
         Bucket: BUCKET_NAME,
@@ -87,6 +82,7 @@ module.exports.getImageUrlService = async (fileName) => {
     }
 };
 
+
 module.exports.changePermissionsService = async (reqData) => {
     const params = {
         Bucket: BUCKET_NAME,
@@ -96,6 +92,26 @@ module.exports.changePermissionsService = async (reqData) => {
     try {
         let results = await awsService.changeImagePermissions(params);
         return results;
+    }
+    catch (error) {
+        throw (error);
+    }
+};
+
+
+module.exports.getUploadS3ImageURL = async (fileName) => {
+    const randomID = parseInt(Math.random() * 10000000)
+    const Key = `${randomID}.jpg`
+    const params = {
+        Bucket: BUCKET_NAME,
+        Key,
+        Expires: URL_EXPIRATION_SECONDS,
+        ContentType: 'image/jpeg',
+        ACL: 'public-read'
+    };
+    try {
+        let results = await awsService.getSignedUrlPromise(params);
+        return ({ "uploadURl": results, "Key": params.Key });
     }
     catch (error) {
         throw (error);
